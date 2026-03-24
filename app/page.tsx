@@ -1,41 +1,60 @@
 'use client';
-import Sidenav from '@/app/ui/nav';
+
 import Link from 'next/link';
-// import { Thermometer } from "@deemlol/next-icons"
-// <Thermometer size={128} color="#FFFFFF" strokeWidth={1.5} />
+import{Ruler,Weight,Thermometer} from "lucide-react";
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+
+
 export default function Home() {
-  function handleSearch(term:string){
-      console.log(term);
-    }
   return (
-    
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-red text-black">
-      {/* <Sidenav/> */}
-      UNIT CONVERTER
-      <Link
-        className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
-        href="/length"
-      >
-        <div className="w-32 text-white md:w-40">
-          Lenght
-        </div>
-      </Link>
-            <Link
-        className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
-        href="/weight"
-      >
-        <div className="w-32 text-white md:w-40">
-          Weight
-        </div>
-      </Link>
-            <Link
-        className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
-        href="/temperature"
-      >
-        <div className="w-32 text-white md:w-40">
-          Temperature
-        </div>
-      </Link>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-black px-4">
+
+      {/* Title */}
+      <h1 className="text-4xl font-bold mb-2">Unit Converter</h1>
+      <p className="text-gray-500 mb-8 text-center">
+        Convert between different units easily
+      </p>
+
+      {/* Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-3xl">
+
+        {/* Length */}
+        <Link
+          href="/length"
+          className="group bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:shadow-xl hover:-translate-y-1 transition"
+        >
+          {/* <div className="text-3xl mb-3">📏</div> */}
+          <Ruler/>
+          <p className="text-lg font-semibold group-hover:text-blue-600">
+            Length
+          </p>
+        </Link>
+
+        {/* Weight */}
+        <Link
+          href="/weight"
+          className="group bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:shadow-xl hover:-translate-y-1 transition"
+        >
+          {/* <div className="text-3xl mb-3">⚖️</div> */}
+          <Weight/>
+          <p className="text-lg font-semibold group-hover:text-blue-600">
+            Weight
+          </p>
+        </Link>
+
+        {/* Temperature */}
+        <Link
+          href="/temperature"
+          className="group bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:shadow-xl hover:-translate-y-1 transition"
+        >
+          {/* <div className="text-3xl mb-3">🌡️</div> */}
+          <Thermometer/>
+          <p className="text-lg font-semibold group-hover:text-blue-600">
+            Temperature
+          </p>
+        </Link>
+
+      </div>
     </div>
   );
 }
