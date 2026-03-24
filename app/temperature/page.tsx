@@ -1,52 +1,123 @@
 'use client';
+
 import Dropdown from "./dropdown";
 import { useState } from "react";
+import { tempUnit } from "../definitions";
+import Result from "../ui/result";
 
+export default function Page() {
+  const [result, setResult] = useState<number | null>(null);
+  const [from, setFrom] = useState<string>('');
+  const [to, setTo] = useState<string>('');
+  const [inputValue, setInputValue] = useState('');
 
-export default function Page(){
-    const conversion= ({value,fromm,too}:any)=>{
-        if (fromm===too){
-            return value;
-        }else if (fromm==='C'){
-           return too==='F'? (1.8*value+32):value + 273;
+  const conversion = ({
+    value,
+    from,
+    to,
+  }: {
+    value: number;
+    from: tempUnit;
+    to: tempUnit;
+  }) => {
+    let res = value;
 
-        }else if (fromm ==='F'){
-            return too==='C'? (value-32)*5/9:(value-32)*5/9+273;
+    if (from === to) {
+      res = value;
+    } else if (from === 'C') {
+      res = to === 'F' ? 1.8 * value + 32 : value + 273;
+    } else if (from === 'F') {
+      res = to === 'C' ? (value - 32) * 5 / 9 : (value - 32) * 5 / 9 + 273;
+    } else {
+      res = to === 'C' ? value - 273 : (value - 273) * 9 / 5 + 32;
+    }
 
-        }else{
-            return  too==='C'? value-273:(value-273)*9/5+32;
+    return parseFloat(res.toFixed(4)); // ✅ rounded
+  };
 
-    }}
+  function handleReset() {
+    setInputValue('');
+    setFrom('');
+    setTo('');
+    setResult(null);
+  }
 
-    const [result,setResult]=useState('');
-    const [from,setFrom]= useState('');
-    const [to,setTo]= useState('');
-    const [inputValue,setInputValue]=useState('');
-    return (
-    <div className="bg-white text-black">
-    <p>Temperature conversion</p>
-    <p>Enter the temperature to convert.</p>    
-    <input 
-    className="peer block w-half rounded-md border border-black-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-        placeholder='enter value'
-        value={inputValue}
-        onChange={(e)=>{
-          setInputValue(e.target.value);
-        }}
-    />
-    <p>unit to convert from</p>
-    <Dropdown value={from}  setValue={setFrom} />
-    <p>Unit to convert to </p>
-   
-    <Dropdown value={to}  setValue={setTo}/>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 text-black">
+      <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md space-y-4">
 
+        {/* Title */}
+        <h1 className="text-2xl font-bold text-center">
+          Temperature Converter
+        </h1>
 
-    <button onClick={()=> setResult(conversion({ value:Number(inputValue) ,fromm:from ,too:to}))}>convert</button>
+        <p className="text-sm text-gray-500 text-center">
+          Enter value and select units
+        </p>
 
-    <p>Result of Your Calcuation</p>
+        {/* Input */}
+        <input
+          type="number"
+          placeholder="Enter temperature"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
 
-    <p>{inputValue} {from}={result} {to}</p>
+        {/* Dropdowns */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <p className="text-sm mb-1">From</p>
+            <Dropdown value={from} setValue={setFrom} />
+          </div>
 
+          <div>
+            <p className="text-sm mb-1">To</p>
+            <Dropdown value={to} setValue={setTo} />
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex gap-3">
+          <button
+            onClick={() => {
+              if (from && to) {
+                setResult(
+                  conversion({
+                    value: Number(inputValue),
+                    from: from as tempUnit,
+                    to: to as tempUnit,
+                  })
+                );
+              }
+            }}
+            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition"
+          >
+            Convert
+          </button>
+
+          {(inputValue || from || to || result !== null) && (
+            <button
+              onClick={handleReset}
+              className="flex-1 bg-gray-300 hover:bg-gray-400 py-2 rounded-lg transition"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+
+        {/* Result */}
+        {result !== null && (
+          <div className="bg-gray-50 p-3 rounded-lg text-center">
+            <Result
+              fromValue={Number(inputValue)}
+              from={from as tempUnit}
+              result={result}
+              to={to as tempUnit}
+            />
+          </div>
+        )}
+      </div>
     </div>
-    )
+  );
 }

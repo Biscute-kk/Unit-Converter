@@ -3,69 +3,113 @@
 import { useState } from "react"
 import Dropdown from "./dropdown";
 import { Unit } from "../definitions";
+import Result from "../ui/result";
 
-// type Unit = 'mg' | 'g' | 'kg' | 'oz' | 'lb';
-
-export default function Page(){
-
-
-
+export default  function Page(){
 
     const [weight,setWeight]= useState('');
     const [from,setFrom]=useState<string>('');
     const[to,setTo]=useState<string>('');
     const [result,setResult]=useState<number | null>(null);
+  const conversion = ({
+    value,
+    from,
+    to,
+  }: {
+    value: number;
+    from: Unit;
+    to: Unit;
+  }) => {
+    const unitsToGrams: Record<Unit, number> = {
+      mg: 0.001,
+      g: 1.0,
+      kg: 1000.0,
+      oz: 28.3495231,
+      lb: 453.59237,
+    };
+
+    const gram = value * unitsToGrams[from];
+    return Math.round(gram / unitsToGrams[to]*10000)/10000;
+  };
 
 
-    // function conversion/
-    const conversion=({value,from,to}:{
-        value:number,
-        from:Unit;
-        to:Unit
-    })=>{
-        // type Unit = 'mg' | 'g' | 'kg' | 'oz' | 'lb';
-        const unitsToGrams:Record<Unit,number>={
-            mg: 0.001,
-            g: 1.0,
-            kg: 1000.0,
-            oz: 28.3495231,
-            lb: 453.59237
-        };
-
-        const gram= value*unitsToGrams[from];
-        const result= gram/unitsToGrams[to];
-        return result;
-
-        
-
+    function handleReset(){
+        setWeight(''),
+        setFrom(''),
+        setTo(''),
+        setResult(null)
     }
 
-    return (
-        <div className="bg-white text-black">
-            <p>WEIGHT CONVERSION</p>
-            <p>Enter the weight to convert.</p>    
-                <input 
-                className="peer block w-half rounded-md border border-black-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                    placeholder='enter value'
-                    value={weight}
-                    onChange={(e)=>{
-                      setWeight(e.target.value);
-                    }}
-                />
-                <p>unit to convert from</p>
-                <Dropdown value={from}  setValue={setFrom} />
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 text-black">
+      <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md space-y-4">
+        {/* Title */}
+        <h1 className="text-2xl font-bold text-center">
+          Weight Converter
+        </h1>   
+        <p className="text-sm text-gray-500 text-center">
+          Enter value and select units
+        </p>
+        {/* Input */}
+        <input
+          type="number"
+          placeholder="Enter weight"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+        {/* Dropdowns */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <p className="text-sm mb-1">From</p>
+            <Dropdown value={from} setValue={setFrom} />
+          </div>
 
-                <p>Unit to convert to </p>
-                <Dropdown value={to}  setValue={setTo}/>
-            
-            
-                <button onClick={()=> setResult(conversion({ value:Number(weight) ,from:from as Unit ,to:to as Unit}))}>convert</button>
-            
-                <p>Result of Your Calcuation</p>
-            
-                <p>{weight} {from}={result} {to}</p>
-            
-        
+          <div>
+            <p className="text-sm mb-1">To</p>
+            <Dropdown value={to} setValue={setTo} />
+          </div>
         </div>
-    )
+
+        {/* Buttons */}
+        <div className="flex gap-3">
+          <button
+            onClick={() =>
+              setResult(
+                conversion({
+                  value: Number(weight),
+                  from: from as Unit,
+                  to: to as Unit,
+                })
+              )
+            }
+            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition"
+          >
+            Convert
+          </button>
+
+          {(weight || from || to || result !== null) && (
+            <button
+              onClick={handleReset}
+              className="flex-1 bg-gray-300 hover:bg-gray-400 py-2 rounded-lg transition"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+
+        {/* Result */}
+        {result !== null && (
+          <div className="bg-gray-50 p-3 rounded-lg text-center">
+            <Result
+              fromValue={Number(weight)}
+              from={from as Unit}
+              result={result}
+              to={to as Unit}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

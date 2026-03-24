@@ -7,3 +7,7 @@
 // };
 
 export type Unit = 'mg' | 'g' | 'kg' | 'oz' | 'lb';
+
+export type  LengthUnit = 'mm' | 'cm' | 'm' | 'km' | 'in' | 'ft' | 'yd' | 'mi';
+
+export type tempUnit ='F' |'K' | 'C';
