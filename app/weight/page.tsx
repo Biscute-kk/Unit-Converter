@@ -41,7 +41,7 @@ export default function Page(){
     }
 
     return (
-        <div>
+        <div className="bg-white text-black">
             <p>WEIGHT CONVERSION</p>
             <p>Enter the weight to convert.</p>    
                 <input 
